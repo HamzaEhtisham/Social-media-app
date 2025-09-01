@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   FlatList,
   TextInput,
+  Alert,
 } from "react-native";
 import { Loader } from "./Loader";
 import Comment from "./Comment";
@@ -32,6 +33,7 @@ export default function CommentsModal({
   const [newComment, setNewComment] = useState("");
   const comments = useQuery(api.comments.getComments, { postId });
   const addComment = useMutation(api.comments.addComment);
+  const deleteComment = useMutation(api.comments.deleteComment); // <-- Delete mutation
 
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
@@ -41,11 +43,31 @@ export default function CommentsModal({
         content: newComment,
         postId,
       });
-
       setNewComment("");
     } catch (error) {
       console.log("Error adding comment:", error);
     }
+  };
+
+  const handleDeleteComment = async (commentId: Id<"comments">) => {
+    Alert.alert(
+      "Delete Comment",
+      "Are you sure you want to delete this comment?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteComment({ commentId });
+            } catch (error) {
+              console.log("Error deleting comment:", error);
+            }
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -73,7 +95,12 @@ export default function CommentsModal({
           <FlatList
             data={comments}
             keyExtractor={(item) => item._id}
-            renderItem={({ item }) => <Comment comment={item} />}
+            renderItem={({ item }) => (
+              <Comment
+                comment={item}
+                onDelete={() => handleDeleteComment(item._id)} // <-- pass delete function
+              />
+            )}
             contentContainerStyle={styles.commentsList}
           />
         )}

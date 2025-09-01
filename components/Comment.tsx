@@ -1,17 +1,24 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { styles } from "@/styles/feed.styles";
 import { formatDistanceToNow } from "date-fns";
+import { Ionicons } from "@expo/vector-icons";
 
 interface Comment {
   content: string;
   _creationTime: number;
+  _id?: string; // optional id if needed
   user: {
     fullname: string;
     image: string;
   };
 }
 
-export default function Comment({ comment }: { comment: Comment }) {
+interface CommentProps {
+  comment: Comment;
+  onDelete?: () => void; // optional delete function
+}
+
+export default function Comment({ comment, onDelete }: CommentProps) {
   return (
     <View style={styles.commentContainer}>
       <Image
@@ -25,6 +32,12 @@ export default function Comment({ comment }: { comment: Comment }) {
           {formatDistanceToNow(comment._creationTime, { addSuffix: true })}
         </Text>
       </View>
+
+      {onDelete && (
+        <TouchableOpacity onPress={onDelete} style={{ marginLeft: 8 }}>
+          <Ionicons name="trash" size={20} color="red" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
