@@ -27,6 +27,11 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.surface,
   },
+  storiesContentContainer: {
+    paddingHorizontal: 8,
+  },
+
+  // Story Styles - Consolidated and Fixed
   storyWrapper: {
     alignItems: "center",
     marginHorizontal: 8,
@@ -38,13 +43,28 @@ export const styles = StyleSheet.create({
     borderRadius: 34,
     padding: 2,
     backgroundColor: COLORS.background,
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: COLORS.primary,
     marginBottom: 4,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  // Story ring variations
+  addStoryRing: {
+    borderColor: COLORS.grey + "40",
+    borderWidth: 2,
+    backgroundColor: COLORS.surface,
   },
   noStory: {
-    borderColor: COLORS.grey,
+    borderColor: COLORS.grey + "60",
+    borderWidth: 1,
   },
+  viewedStory: {
+    borderColor: COLORS.grey,
+    borderWidth: 2,
+  },
+
+  // Story avatar and content
   storyAvatar: {
     width: 60,
     height: 60,
@@ -52,11 +72,49 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: COLORS.background,
   },
+  addStoryContent: {
+    position: "relative",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  addStoryIcon: {
+    position: "absolute",
+    bottom: -2,
+    right: -2,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: COLORS.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: COLORS.background,
+  },
+  addStoryText: {
+    color: COLORS.white,
+    fontSize: 14,
+    fontWeight: "700",
+    lineHeight: 16,
+  },
+
+  // Story usernames
   storyUsername: {
     fontSize: 11,
     color: COLORS.white,
     textAlign: "center",
+    fontWeight: "400",
   },
+  viewedUsername: {
+    color: COLORS.grey,
+  },
+  storyTimestamp: {
+    fontSize: 10,
+    color: COLORS.grey,
+    textAlign: "center",
+    marginTop: 2,
+  },
+
+  // Post Styles
   post: {
     marginBottom: 16,
   },
@@ -132,6 +190,8 @@ export const styles = StyleSheet.create({
     color: COLORS.grey,
     marginBottom: 8,
   },
+
+  // Modal Styles
   modalContainer: {
     backgroundColor: COLORS.background,
     marginBottom: Platform.OS === "ios" ? 44 : 0,
@@ -216,5 +276,55 @@ export const styles = StyleSheet.create({
   centered: {
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  // Legacy styles - keeping for backward compatibility
+  addStoryPlus: {
+    position: "absolute",
+    bottom: -2,
+    right: -2,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: COLORS.primary,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: COLORS.background,
+  },
+  addStoryPlusText: {
+    color: COLORS.white,
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  storyContainer: {
+    alignItems: "center",
+    marginHorizontal: 8,
+    width: 72,
+  },
+  addStoryInner: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: COLORS.primary,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  storyRingUnseen: {
+    borderColor: COLORS.primary,
+    borderWidth: 3,
+  },
+  storyRingOwn: {
+    borderColor: COLORS.secondary || COLORS.primary,
+  },
+  storyImageContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    overflow: "hidden",
+  },
+  storyImage: {
+    width: "100%",
+    height: "100%",
   },
 });

@@ -11,6 +11,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import CommentsModal from "./CommentsModal";
 import { formatDistanceToNow } from "date-fns";
 import { useUser } from "@clerk/clerk-expo";
+import { router } from "expo-router";
 
 type PostProps = {
   post: {
@@ -46,6 +47,7 @@ export default function Post({ post }: PostProps) {
   const toggleLike = useMutation(api.posts.toggleLike);
   const toggleBookmark = useMutation(api.bookmarks.toggleBookmark);
   const deletePost = useMutation(api.posts.deletePost);
+  const createOrGetConversation = useMutation(api.messages.createOrGetConversation);
 
   const handleLike = async () => {
     try {
@@ -66,6 +68,20 @@ export default function Post({ post }: PostProps) {
       await deletePost({ postId: post._id });
     } catch (error) {
       console.error("Error deleting post:", error);
+    }
+  };
+
+  const handleMessage = async () => {
+    if (!currentUser) return;
+    
+    try {
+      const conversationId = await createOrGetConversation({ 
+        participantId: post.author._id as Id<"users">
+      });
+      // Use replace to avoid navigation stack issues
+      router.replace(`/chat/${conversationId}`);
+    } catch (error) {
+      console.error("Error creating conversation:", error);
     }
   };
 
@@ -135,6 +151,16 @@ export default function Post({ post }: PostProps) {
               color={COLORS.white}
             />
           </TouchableOpacity>
+          {/* Only show message button for other users' posts */}
+          {post.author._id !== currentUser?._id && (
+            <TouchableOpacity onPress={handleMessage}>
+              <Ionicons
+                name="send-outline"
+                size={22}
+                color={COLORS.white}
+              />
+            </TouchableOpacity>
+          )}
         </View>
         <TouchableOpacity onPress={handleBookmark}>
           <Ionicons

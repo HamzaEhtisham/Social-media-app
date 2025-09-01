@@ -1,5 +1,5 @@
 import { Loader } from "@/components/Loader";
-import { COLORS } from "@/constants/theme";
+import { COLORS, getColors } from "@/constants/theme";
 import { api } from "@/convex/_generated/api";
 import { Doc } from "@/convex/_generated/dataModel";
 import { styles } from "@/styles/profile.styles";
@@ -8,6 +8,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { Image } from "expo-image";
 import { useState } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
+import ThemeSettings from "@/components/ThemeSettings";
 import {
   View,
   Text,
@@ -24,7 +26,10 @@ import {
 
 export default function Profile() {
   const { signOut, userId } = useAuth();
+  const { currentTheme } = useTheme();
+  const colors = getColors(currentTheme);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [isThemeSettingsVisible, setIsThemeSettingsVisible] = useState(false);
   const currentUser = useQuery(
     api.users.getUserByClerkId,
     userId ? { clerkId: userId } : "skip"
@@ -55,8 +60,18 @@ export default function Profile() {
           <Text style={styles.username}>{currentUser.username}</Text>
         </View>
         <View style={styles.headerRight}>
+          <TouchableOpacity 
+            style={styles.headerIcon} 
+            onPress={() => setIsThemeSettingsVisible(true)}
+          >
+            <Ionicons 
+              name={currentTheme === 'dark' ? 'moon' : currentTheme === 'light' ? 'sunny' : 'phone-portrait'} 
+              size={24} 
+              color={colors.white} 
+            />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.headerIcon} onPress={() => signOut()}>
-            <Ionicons name="log-out-outline" size={24} color={COLORS.white} />
+            <Ionicons name="log-out-outline" size={24} color={colors.white} />
           </TouchableOpacity>
         </View>
       </View>
@@ -183,6 +198,26 @@ export default function Profile() {
             </View>
           </KeyboardAvoidingView>
         </TouchableWithoutFeedback>
+      </Modal>
+
+      {/* THEME SETTINGS MODAL */}
+      <Modal
+        visible={isThemeSettingsVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsThemeSettingsVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Theme Settings</Text>
+              <TouchableOpacity onPress={() => setIsThemeSettingsVisible(false)}>
+                <Ionicons name="close" size={24} color={colors.white} />
+              </TouchableOpacity>
+            </View>
+            <ThemeSettings onClose={() => setIsThemeSettingsVisible(false)} />
+          </View>
+        </View>
       </Modal>
 
       {/* SELECTED IMAGE MODAL */}
