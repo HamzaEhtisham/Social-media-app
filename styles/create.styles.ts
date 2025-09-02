@@ -57,6 +57,20 @@ export const styles = StyleSheet.create({
     color: COLORS.grey,
     fontSize: 16,
   },
+  mediaButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+    backgroundColor: COLORS.surface,
+    borderRadius: 12,
+    minWidth: 100,
+  },
+  mediaButtonText: {
+    color: COLORS.white,
+    fontSize: 14,
+    fontWeight: "500",
+    marginTop: 8,
+  },
   content: {
     flex: 1,
   },
@@ -110,5 +124,16 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     paddingTop: 8,
     minHeight: 40,
+  },
+  toggleButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: COLORS.primary,
+    borderRadius: 16,
+  },
+  toggleText: {
+    color: COLORS.white,
+    fontSize: 14,
+    fontWeight: "600",
   },
 });

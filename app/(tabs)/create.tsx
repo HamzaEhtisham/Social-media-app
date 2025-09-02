@@ -2,7 +2,7 @@ import { COLORS } from "@/constants/theme";
 import { styles } from "@/styles/create.styles";
 import { useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
   View,
@@ -26,76 +26,113 @@ import { api } from "@/convex/_generated/api";
 export default function CreateScreen() {
   const router = useRouter();
   const { user } = useUser();
+  const { type } = useLocalSearchParams();
 
   const [caption, setCaption] = useState("");
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [selectedAsset, setSelectedAsset] = useState<any>(null);
   const [isSharing, setIsSharing] = useState(false);
+  const [isStory, setIsStory] = useState(type === "story");
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: "images",
+      mediaTypes: ["images", "videos"],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
     });
 
-    if (!result.canceled) setSelectedImage(result.assets[0].uri);
+    if (!result.canceled) setSelectedAsset(result.assets[0]);
+  };
+
+  const pickFromCamera = async () => {
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ["images", "videos"],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) setSelectedAsset(result.assets[0]);
   };
 
   const generateUploadUrl = useMutation(api.posts.generateUploadUrl);
   const createPost = useMutation(api.posts.createPost);
+  const generateStoryUploadUrl = useMutation(api.stories.generateUploadUrl);
+  const createStory = useMutation(api.stories.createStory);
 
   const handleShare = async () => {
-    if (!selectedImage) return;
+    if (!selectedAsset) return;
 
     try {
       setIsSharing(true);
-      const uploadUrl = await generateUploadUrl();
+      const uploadUrl = isStory
+        ? await generateStoryUploadUrl()
+        : await generateUploadUrl();
 
       const uploadResult = await FileSystem.uploadAsync(
         uploadUrl,
-        selectedImage,
+        selectedAsset.uri,
         {
           httpMethod: "POST",
           uploadType: FileSystem.FileSystemUploadType.BINARY_CONTENT,
-          mimeType: "image/jpeg",
+          mimeType: selectedAsset.type === "video" ? "video/mp4" : "image/jpeg",
         }
       );
 
       if (uploadResult.status !== 200) throw new Error("Upload failed");
 
       const { storageId } = JSON.parse(uploadResult.body);
-      await createPost({ storageId, caption });
 
-      setSelectedImage(null);
+      if (isStory) {
+        await createStory({
+          storageId,
+          caption,
+          mediaType: selectedAsset.type,
+        });
+      } else {
+        await createPost({ storageId, caption });
+      }
+
+      setSelectedAsset(null);
       setCaption("");
+      setIsStory(false);
 
       router.push("/(tabs)");
     } catch (error) {
-      console.log("Error sharing post");
+      console.log("Error sharing", isStory ? "story" : "post");
     } finally {
       setIsSharing(false);
     }
   };
 
-  if (!selectedImage) {
+  if (!selectedAsset) {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.back()}>
             <Ionicons name="arrow-back" size={28} color={COLORS.primary} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>New Post</Text>
-          <View style={{ width: 28 }} />
+          <Text style={styles.headerTitle}>
+            New {isStory ? "Story" : "Post"}
+          </Text>
+          <TouchableOpacity
+            onPress={() => setIsStory(!isStory)}
+            style={styles.toggleButton}
+          >
+            <Text style={styles.toggleText}>{isStory ? "Post" : "Story"}</Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity
-          style={styles.emptyImageContainer}
-          onPress={pickImage}
-        >
-          <Ionicons name="image-outline" size={48} color={COLORS.grey} />
-          <Text style={styles.emptyImageText}>Tap to select an image</Text>
-        </TouchableOpacity>
+        <View style={styles.emptyImageContainer}>
+          <TouchableOpacity style={styles.mediaButton} onPress={pickFromCamera}>
+            <Ionicons name="camera-outline" size={32} color={COLORS.primary} />
+            <Text style={styles.mediaButtonText}>Camera</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.mediaButton} onPress={pickImage}>
+            <Ionicons name="image-outline" size={32} color={COLORS.primary} />
+            <Text style={styles.mediaButtonText}>Gallery</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -111,7 +148,7 @@ export default function CreateScreen() {
         <View style={styles.header}>
           <TouchableOpacity
             onPress={() => {
-              setSelectedImage(null);
+              setSelectedAsset(null);
               setCaption("");
             }}
             disabled={isSharing}
@@ -128,7 +165,7 @@ export default function CreateScreen() {
               styles.shareButton,
               isSharing && styles.shareButtonDisabled,
             ]}
-            disabled={isSharing || !selectedImage}
+            disabled={isSharing || !selectedAsset}
             onPress={handleShare}
           >
             {isSharing ? (
@@ -149,7 +186,7 @@ export default function CreateScreen() {
             {/* IMAGE SECTION */}
             <View style={styles.imageSection}>
               <Image
-                source={selectedImage}
+                source={selectedAsset.uri}
                 style={styles.previewImage}
                 contentFit="cover"
                 transition={200}

@@ -1,4 +1,4 @@
-import { query } from "../../../project-3/spotlight/convex/_generated/server";
+import { query } from "../../../project-3/Social-media-app/convex/_generated/server";
 import { getAuthenticatedUser } from "./users";
 
 export const getNotifications = query({

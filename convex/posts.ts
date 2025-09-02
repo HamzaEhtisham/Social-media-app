@@ -1,12 +1,12 @@
-import { getNotifications } from "../../../project-3/spotlight/convex/notifications";
+import { getNotifications } from "../../../project-3/Social-media-app/convex/notifications";
 import { v } from "convex/values";
 import {
   mutation,
   MutationCtx,
   query,
-} from "../../../project-3/spotlight/convex/_generated/server";
+} from "../../../project-3/Social-media-app/convex/_generated/server";
 import { getAuthenticatedUser } from "./users";
-import { Id } from "../../../project-3/spotlight/convex/_generated/dataModel";
+import { Id } from "../../../project-3/Social-media-app/convex/_generated/dataModel";
 
 export const generateUploadUrl = mutation(async (ctx) => {
   const identity = await ctx.auth.getUserIdentity();

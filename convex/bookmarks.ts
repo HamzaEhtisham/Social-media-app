@@ -2,8 +2,8 @@ import { v } from "convex/values";
 import {
   mutation,
   query,
-} from "../../../project-3/spotlight/convex/_generated/server";
-import { getAuthenticatedUser } from "../../../project-3/spotlight/convex/users";
+} from "../../../project-3/Social-media-app/convex/_generated/server";
+import { getAuthenticatedUser } from "../../../project-3/Social-media-app/convex/users";
 
 export const toggleBookmark = mutation({
   args: { postId: v.id("posts") },
