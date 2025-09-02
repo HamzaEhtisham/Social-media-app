@@ -156,7 +156,7 @@ export const deletePost = mutation({
     // delete associated comments
     const comments = await ctx.db
       .query("comments")
-      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .filter((q) => q.eq(q.field("postId"), args.postId))
       .collect();
 
     for (const comment of comments) {
@@ -166,7 +166,7 @@ export const deletePost = mutation({
     // delete associated bookmarks
     const bookmarks = await ctx.db
       .query("bookmarks")
-      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .filter((q) => q.eq(q.field("postId"), args.postId))
       .collect();
 
     for (const bookmark of bookmarks) {
@@ -175,7 +175,7 @@ export const deletePost = mutation({
 
     const notifications = await ctx.db
       .query("notifications")
-      .withIndex("by_post", (q) => q.eq("postId", args.postId))
+      .filter((q) => q.eq(q.field("postId"), args.postId))
       .collect();
 
     for (const notification of notifications) {
