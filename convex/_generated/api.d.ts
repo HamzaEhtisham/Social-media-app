@@ -15,10 +15,12 @@ import type {
 } from "convex/server";
 import type * as bookmarks from "../bookmarks.js";
 import type * as chat from "../chat.js";
+import type * as chats from "../chats.js";
 import type * as comments from "../comments.js";
 import type * as http from "../http.js";
 import type * as notifications from "../notifications.js";
 import type * as posts from "../posts.js";
+import type * as queries from "../queries.js";
 import type * as stories from "../stories.js";
 import type * as users from "../users.js";
 
@@ -33,10 +35,12 @@ import type * as users from "../users.js";
 declare const fullApi: ApiFromModules<{
   bookmarks: typeof bookmarks;
   chat: typeof chat;
+  chats: typeof chats;
   comments: typeof comments;
   http: typeof http;
   notifications: typeof notifications;
   posts: typeof posts;
+  queries: typeof queries;
   stories: typeof stories;
   users: typeof users;
 }>;

@@ -36,7 +36,7 @@ export default function Index() {
     <View style={styles.container}>
       {/* HEADER */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>spotlight</Text>
+        <Text style={styles.headerTitle}>lamelight</Text>
         <TouchableOpacity onPress={() => router.push("/(chat)/chat")}>
           <Ionicons name="chatbubbles" size={24} color={COLORS.white} />
         </TouchableOpacity>

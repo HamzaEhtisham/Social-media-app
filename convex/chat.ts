@@ -68,32 +68,17 @@ export const sendMessage = mutation({
 
     const userId = identity.subject;
 
+    // Update the chat's lastMessageAt
+    await ctx.db.patch(args.chatId, {
+      lastMessageAt: new Date().toISOString(),
+    });
+
     return await ctx.db.insert("messages", {
       chatId: args.chatId,
       senderId: userId,
       content: args.content,
       createdAt: new Date().toISOString(),
     });
-  },
-});
-
-export const getChats = query({
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new Error("Not authenticated");
-    }
-
-    const userId = identity.subject;
-    const chats = await ctx.db.query("chats").collect();
-
-    return chats
-      .filter((chat) => chat.participants.includes(userId))
-      .sort(
-        (a, b) =>
-          new Date(b.lastMessageAt).getTime() -
-          new Date(a.lastMessageAt).getTime()
-      );
   },
 });
 
