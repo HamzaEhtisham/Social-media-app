@@ -1,5 +1,5 @@
 import { styles } from "@/styles/feed.styles";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import Story from "./Story";
@@ -12,38 +12,37 @@ const StoriesSection = () => {
     clerkId: user?.id || "",
   });
 
-  console.log(
-    "Stories: storiesData=",
-    storiesData,
-    "currentUserData=",
-    currentUserData
-  );
-
   if (!storiesData || !currentUserData) return null;
 
   const isCurrentUserInList = storiesData.some(
     (s) => s.user._id === currentUserData._id
   );
+
   const storiesToShow = isCurrentUserInList
     ? storiesData
     : [{ user: currentUserData, stories: [] }, ...storiesData];
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={styles.storiesContainer}
-    >
-      {storiesToShow.map((userStories) => (
-        <Story
-          key={userStories.user._id}
-          user={userStories.user}
-          stories={userStories.stories}
-          isCurrentUser={userStories.user._id === currentUserData._id}
-          currentUser={currentUserData}
-        />
-      ))}
-    </ScrollView>
+    <View>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.storiesContainer}
+      >
+        {storiesToShow.map((userStories) => (
+          <Story
+            key={userStories.user._id}
+            user={userStories.user}
+            stories={userStories.stories}
+            isCurrentUser={userStories.user._id === currentUserData._id}
+            currentUser={currentUserData}
+          />
+        ))}
+      </ScrollView>
+
+      {/* Divider niche hamesha dikhega */}
+      <View style={styles.storiesDivider} />
+    </View>
   );
 };
 

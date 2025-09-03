@@ -24,8 +24,13 @@ export const styles = StyleSheet.create({
   },
   storiesContainer: {
     paddingVertical: 12,
-    borderBottomWidth: 1,
+    borderBottomWidth: 0,
     borderBottomColor: COLORS.surface,
+  },
+  storiesDivider: {
+    height: 1,
+    backgroundColor: COLORS.surface,
+    marginTop: 4, // thoda gap agar chahiye
   },
   storyWrapper: {
     alignItems: "center",

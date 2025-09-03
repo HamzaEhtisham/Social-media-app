@@ -22,7 +22,21 @@ export default function Index() {
   const posts = useQuery(api.posts.getFeedPosts);
 
   if (posts === undefined) return <Loader />;
-  if (posts.length === 0) return <NoPostsFound />;
+  if (posts.length === 0) {
+    return (
+      <View style={styles.container}>
+        {/* HEADER */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>lamelight</Text>
+          <TouchableOpacity onPress={() => router.push("/(chat)/chat")}>
+            <Ionicons name="chatbubbles" size={24} color={COLORS.white} />
+          </TouchableOpacity>
+        </View>
+        <StoriesSection />
+        <NoPostsFound />
+      </View>
+    );
+  }
 
   // this does nothing
   const onRefresh = () => {
@@ -68,8 +82,31 @@ const NoPostsFound = () => (
       backgroundColor: COLORS.background,
       justifyContent: "center",
       alignItems: "center",
+      paddingHorizontal: 20,
     }}
   >
-    <Text style={{ fontSize: 20, color: COLORS.primary }}>No posts yet</Text>
+    <Ionicons name="images-outline" size={64} color={COLORS.primary} />
+    <Text
+      style={{
+        fontSize: 24,
+        color: COLORS.primary,
+        marginTop: 16,
+        fontFamily: "JetBrainsMono-Medium",
+        textAlign: "center",
+      }}
+    >
+      No posts yet
+    </Text>
+    <Text
+      style={{
+        fontSize: 16,
+        color: COLORS.grey,
+        marginTop: 8,
+        textAlign: "center",
+        opacity: 0.7,
+      }}
+    >
+      Be the first one to share a moment!
+    </Text>
   </View>
 );
